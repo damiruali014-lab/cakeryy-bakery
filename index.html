@@ -57,8 +57,8 @@
   color-scheme:light;
 }
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--cream);color:var(--cocoa);font-family:var(--body);font-size:1.0625rem;line-height:1.6;overflow-x:hidden}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:hidden}
+body{margin:0;background:var(--cream);color:var(--cocoa);font-family:var(--body);font-size:1.0625rem;line-height:1.6;overflow-x:clip}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--cream)}
 img{max-width:100%;height:auto;display:block}
 a{color:inherit}
@@ -138,7 +138,7 @@ h3{font-size:1.5rem}
 }
 
 /* ---------- hero ---------- */
-.hero{background:var(--cherry);color:var(--cream);--scallop:var(--cherry);overflow:visible}
+.hero{background:var(--cherry);color:var(--cream);--scallop:var(--cherry);overflow:visible;overflow-x:clip}
 .hero-inner{display:grid;gap:2.5rem;padding-block:2.75rem 4.5rem;align-items:center;position:relative}
 .hero h1{color:var(--cream);font-size:clamp(2.9rem,11.5vw,5.75rem);line-height:1;font-weight:400}
 .hero h1 em{position:relative;display:inline-block;color:var(--pink)}
@@ -809,6 +809,18 @@ fieldset.field{border:0;padding:0;margin:0}
 </footer>
 
 <script>
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+/* Always open at the top: drop any #hash from the URL on load and jump up
+   instantly ('instant' bypasses the smooth-scroll CSS). The hash is also
+   dropped right away, so the browser has no #target to scroll to after
+   load. Nav link clicks after load are unaffected. */
+if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+window.addEventListener('load', () => {
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+});
+
 (() => {
   /* ---------- Placeholder images ----------
      Any <img data-ph="Label" data-w data-h> without a src gets a brand-colored
